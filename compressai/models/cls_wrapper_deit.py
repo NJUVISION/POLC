@@ -63,12 +63,9 @@ class ClsWrapper(nn.Module):
         self.adapter = TransformModule(320, 384, depth=1, num_heads=6, upscale_factor=1)
         self.task_model = create_model('hf-hub:timm/deit_small_patch16_224.fb_in1k', pretrained=True, dynamic_img_size=True)
         self.task_model_teacher = create_model('hf-hub:timm/deit_small_patch16_224.fb_in1k', pretrained=True, dynamic_img_size=True).eval().requires_grad_(False)
-        self.mask_token = nn.Parameter(torch.zeros(1, 1, 320))
 
         self.register_buffer('imnet_mean', torch.tensor(IMAGENET_DEFAULT_MEAN), persistent=False)
         self.register_buffer('imnet_std', torch.tensor(IMAGENET_DEFAULT_STD), persistent=False)
-
-        torch.nn.init.normal_(self.mask_token, std=.02)
 
     @torch.no_grad()
     def forward_teacher(self, x):

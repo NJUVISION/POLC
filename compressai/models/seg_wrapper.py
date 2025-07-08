@@ -70,12 +70,9 @@ class SegWrapper(nn.Module):
         self.adapter = TransformModule(320, 128, depth=1, num_heads=4)
         self.task_model = PSPNet(**kwargs)
         self.task_model_teacher = PSPNet(**kwargs).eval().requires_grad_(False)
-        self.mask_token = nn.Parameter(torch.zeros(1, 1, 320))
 
         self.register_buffer('imnet_mean', torch.tensor([0.485, 0.456, 0.406]), persistent=False)
         self.register_buffer('imnet_std', torch.tensor([0.229, 0.224, 0.225]), persistent=False)
-
-        torch.nn.init.normal_(self.mask_token, std=.02)
 
         seg_checkpoint = torch.load('checkpoints/pspnet/pspnet_train_epoch_100.pth')['state_dict']
         seg_checkpoint = {k.replace("module.", ""): v for k, v in seg_checkpoint.items()}
