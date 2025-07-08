@@ -61,8 +61,8 @@ class ClsWrapper(nn.Module):
 
         self.backbone = TinyLICVR()
         self.adapter = TransformModule(320, 96, depth=1, num_heads=3)
-        self.task_model = create_model('convnext_tiny', pretrained=True)
-        self.task_model_teacher = create_model('convnext_tiny', pretrained=True).eval().requires_grad_(False)
+        self.task_model = create_model('hf-hub:timm/convnext_tiny.fb_in1k', pretrained=True)
+        self.task_model_teacher = create_model('hf-hub:timm/convnext_tiny.fb_in1k', pretrained=True).eval().requires_grad_(False)
         self.mask_token = nn.Parameter(torch.zeros(1, 1, 320))
 
         self.register_buffer('imnet_mean', torch.tensor(IMAGENET_DEFAULT_MEAN), persistent=False)

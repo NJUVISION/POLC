@@ -15,8 +15,12 @@ apt update
 apt install libgl1-mesa-dev ffmpeg libsm6 libxext6 # for opencv-python
 git clone https://github.com/NJUVISION/POLC.git
 cd MPA
-pip install -U pip && pip install -e .
+pip install -U pip
+pip install natten==0.17.5+torch260cu126 -f https://whl.natten.org
+pip install -e .
 ```
+
+For datasets, please follow [TinyLIC](https://github.com/lumingzzz/TinyLIC.git), [ConvNeXt](https://github.com/facebookresearch/ConvNeXt) and [PSPNet](https://github.com/hszhao/semseg) to prepare [Flicker2W](https://github.com/liujiaheng/CompressionData), [ImageNet-1K](http://image-net.org/) and [ADE20K](https://ade20k.csail.mit.edu).
 
 
 ## Pretrained Models

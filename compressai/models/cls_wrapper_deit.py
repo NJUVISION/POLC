@@ -61,8 +61,8 @@ class ClsWrapper(nn.Module):
 
         self.backbone = TinyLICVR()
         self.adapter = TransformModule(320, 384, depth=1, num_heads=6, upscale_factor=1)
-        self.task_model = create_model('deit_small_patch16_224', pretrained=True, img_size=256)
-        self.task_model_teacher = create_model('deit_small_patch16_224', pretrained=True, img_size=256).eval().requires_grad_(False)
+        self.task_model = create_model('hf-hub:timm/deit_small_patch16_224.fb_in1k', pretrained=True, dynamic_img_size=True)
+        self.task_model_teacher = create_model('hf-hub:timm/deit_small_patch16_224.fb_in1k', pretrained=True, dynamic_img_size=True).eval().requires_grad_(False)
         self.mask_token = nn.Parameter(torch.zeros(1, 1, 320))
 
         self.register_buffer('imnet_mean', torch.tensor(IMAGENET_DEFAULT_MEAN), persistent=False)
@@ -76,6 +76,7 @@ class ClsWrapper(nn.Module):
         x = self.task_model_teacher.patch_embed(x)
         features.append(x.detach())
         x = self.task_model_teacher._pos_embed(x)
+        x = self.task_model_teacher.patch_drop(x)
         x = self.task_model_teacher.norm_pre(x)
 
         for blk in self.task_model_teacher.blocks:
@@ -90,6 +91,7 @@ class ClsWrapper(nn.Module):
         x = self.adapter(x, quality).flatten(2).transpose(2, 1).contiguous()
         features.append(x)
         x = self.task_model._pos_embed(x)
+        x = self.task_model.patch_drop(x)
         x = self.task_model.norm_pre(x)
 
         for blk in self.task_model.blocks:
