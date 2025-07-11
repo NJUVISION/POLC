@@ -835,7 +835,7 @@ class TinyLICVR(nn.Module):
                 "shape": z.size()[-2:]
                 }
 
-    def decompress(self, strings, shape, quality=1):
+    def decompress(self, strings, shape, quality=1, q_task=0, task_idx=0):
         assert isinstance(strings, list) and len(strings) == 2
         assert quality >= 1 and quality <= self.levels, f"quality should within range [1, {self.levels}], but get quality={quality}"
         s = int(quality) - 1
